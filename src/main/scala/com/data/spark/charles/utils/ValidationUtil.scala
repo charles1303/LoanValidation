@@ -10,7 +10,7 @@ class ValidationUtil extends Serializable{
     var isValid : Boolean = false
     var cnt : Array[String] = rddLine.split(",")
     println("cnt length==="+cnt.length)
-    if(cnt.length > noOfExpectedCSVColumns){
+    if(cnt.length < noOfExpectedCSVColumns){
        isValid = true;
        println("Is Valid")
        println("Is Valid Object====="+isValid)
