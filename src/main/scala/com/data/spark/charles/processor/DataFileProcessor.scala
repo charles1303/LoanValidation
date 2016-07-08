@@ -12,12 +12,15 @@ import com.data.spark.charles.SendOutputStream
 
 class DataFileProcessor extends Serializable{
     val hdfsBaseUrl = Properties.envOrElse("HDFS_BASE_URL", "hdfs://127.0.0.1:9000")
-      val dataSourceBaseUrl = Properties.envOrElse("DATA_SOURCE_BASE_URL", "file:///home")
+      val dataSourceBaseUrl = Properties.envOrElse("DATA_SOURCE_BASE_URL", "/home/uploads/")
   def updateModel(lineStream: RDD[String])={
     lineStream.foreach { fileName =>
+      var file = fileName
+      if(!new java.io.File(dataSourceBaseUrl+file).exists){
+        file = fileName + ".COMPLETED"
+      }
       
-      
-      val inputFileData = RequestInputStream.getStreamingContext().sparkContext.textFile(dataSourceBaseUrl+"/uploads/"+fileName).cache()
+      val inputFileData = RequestInputStream.getStreamingContext().sparkContext.textFile("file://"+dataSourceBaseUrl+file).cache()
       val randomForestModel = new RandomForestImplClass(inputFileData)
       randomForestModel.updateTrainingModel(inputFileData)
       //val sos = new SendOutputStream
